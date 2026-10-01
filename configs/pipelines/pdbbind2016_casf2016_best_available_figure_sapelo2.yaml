@@ -1,0 +1,23 @@
+version: mint-agent.pipeline.v1
+run_id: pdbbind2016-casf2016-best-available-figure-20260924
+task_config: configs/tasks/casf2016_sapelo2_best_available_figure.yaml
+execution_profile: configs/execution/sapelo2_progressive_test.yaml
+dataset_id: casf2016
+
+invariants: [PH, PL, CA, FPRC, EIC]
+evidence_scope: full_train
+qc_config: configs/scout/v1.yaml
+audit_config: configs/scout/v1.yaml
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_adaptive_gbt.yaml
+feature_diagnostic_top_k: 10
+auto_resume_failed: true
+max_attempts: 2
+
+llm_scientific:
+  mode: advisory
+  model: gpt-5.6-terra
+  env_file: ~/.config/mathagent/openai.env
+  cache_dir: /path/to/workdir/mathagent/cache/llm_scientific
+  timeout_seconds: 180
+  max_candidates: 10

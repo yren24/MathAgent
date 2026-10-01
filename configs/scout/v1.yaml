@@ -1,0 +1,143 @@
+probe:
+  fraction: 0.20
+  min_samples: 300
+  max_samples: 1000
+  target_quantile_bins: 10
+  size_quantile_bins: 5
+  min_pair_support: 3
+  augmentation_fraction_limit: 0.10
+  cv_folds: 5
+  random_seed: 2026
+
+probe_audit:
+  max_ks_distance: 0.10
+  max_abs_standardized_mean_difference: 0.20
+  max_joint_cell_share_error: 0.03
+  require_exact_extremes: false
+
+bootstrap:
+  enabled: true
+  replicates: 1000
+  stratified: true
+  ci_level: 0.95
+  random_seed: 2026
+
+metrics:
+  primary: PCC
+  secondary: [RMSE, MAE, R2]
+
+model:
+  family: fixed_gbt
+  hpo: false
+  params:
+    config_id: plbind_feature_gbt_ensemble_3run_v1
+    n_estimators: 4000
+    max_depth: 7
+    min_samples_split: 5
+    learning_rate: 0.01
+    subsample: 0.5
+    max_features: sqrt
+    random_state: 42
+    n_runs: 3
+    normalize: StandardScaler
+
+consensus:
+  aggregation: arithmetic_mean
+  weighted: false
+
+ranking:
+  # Diagnostic-only legacy composite. These weights are reported for backward
+  # compatibility but never determine frozen_priority_order. Method subsets are
+  # selected hierarchically: QC gate -> bootstrap top tier -> stability -> cost.
+  weights:
+    probe_performance: 0.55
+    ranking_stability: 0.20
+    feature_quality: 0.15
+    computational_efficiency: 0.10
+    # LLM proposals are experiment candidates and provenance only. They do not
+    # receive numerical credit in empirical method ranking.
+    llm_prior: 0.00
+
+controlled_experiment:
+  # These are provisional experiment-budget and comparison settings, not
+  # scientific constants. The validator also enforces a hard maximum of two
+  # alternatives per stage to limit multiple comparisons and compute cost.
+  max_probe_alternatives: 2
+  max_representation_alternatives: 2
+  probe_comparison:
+    # A candidate must pass every gate. Among passing candidates, the smallest
+    # Probe is selected as the direct compute-cost proxy. These provisional
+    # thresholds are configurable and mirror probe_audit by default.
+    max_ks_distance: 0.10
+    max_abs_standardized_mean_difference: 0.20
+    max_joint_cell_share_error: 0.03
+    require_all_target_bins_covered: true
+    require_all_size_bins_covered: true
+    require_pair_support_consistent: true
+    require_minimum_pair_support: true
+  representation_comparison:
+    # Train-only, label-free representation suitability. These are provisional
+    # configurable defaults, not scientific constants.
+    require_train_only: true
+    minimum_pair_coverage: 0.0
+    # Configurable experimental tolerance: candidates retaining at least 98%
+    # of observed pair-support mass remain comparable at the coverage stage.
+    pair_coverage_tolerance: 0.02
+    filtration_issue_tolerance: 0
+    feature_warning_tolerance: 0
+    max_total_feature_dimensions: null
+    dimension_tolerance: 0
+
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: false
+
+target:
+  user_target_takes_precedence: true
+  auto_lower_quantile: 0.10
+  auto_upper_quantile: 0.90
+  absolute_relaxation:
+    PCC: 0.02
+    R2: 0.02
+  relative_relaxation:
+    RMSE: 0.05
+    MAE: 0.05
+  sanity_floor: null
+
+feature_qc:
+  enabled: true
+  fail_on:
+    - duplicate_sample
+    - failed_generation
+    - invariant_mismatch
+    - manifest_sample_mismatch
+    - missing_file
+    - wrong_representation_hash
+    - shape_mismatch
+    - empty
+    - nonfinite
+  warn_on:
+    - all_zero
+    - constant
+    - high_sparsity
+    - large_magnitude
+    - robust_outlier
+    - many_all_zero_coordinates
+    - many_constant_coordinates
+  absolute_max: 1.0e12
+  sparsity_warning_fraction: 0.999
+  robust_z_warning: 12.0
+  robust_min_samples: 20
+  coordinate_zero_epsilon: 1.0e-12
+  population_all_zero_warning_fraction: 0.95
+  population_constant_warning_fraction: 0.99
+
+filtration_audit:
+  enabled: true
+  zero_epsilon: 1.0e-12
+  tail_fraction: 0.20
+  min_tail_points: 5
+  sparse_zero_fraction: 0.995
+  saturation_relative_l2: 0.005
+  boundary_relative_l2: 0.05
+  boundary_window: 3

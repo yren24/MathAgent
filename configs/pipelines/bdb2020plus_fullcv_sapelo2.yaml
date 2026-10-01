@@ -1,0 +1,14 @@
+version: mint-agent.pipeline.v1
+run_id: from-scratch-v2
+task_config: configs/tasks/bdb2020plus_fullcv_sapelo2.yaml
+execution_profile: configs/execution/sapelo2.yaml
+dataset_id: bdb2020plus-fullcv
+
+# Start with PL as the controlled end-to-end validation. Add other invariant
+# families here after their standalone parity checks pass on this dataset.
+invariants: [PL]
+evidence_scope: full_train
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_fixed_gbt.yaml
+auto_resume_failed: true
+max_attempts: 2

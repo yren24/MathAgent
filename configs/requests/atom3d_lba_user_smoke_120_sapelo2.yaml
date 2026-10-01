@@ -1,0 +1,37 @@
+version: mint-agent.user-request.v1
+request_id: atom3d-lba-user-smoke-120
+goal: Run an end-to-end user-entry smoke test on a small real ATOM3D LBA protein-ligand affinity dataset with explicit train, validation, and test splits.
+system_type: protein_ligand
+task_type: regression
+primary_metric: PCC
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2.yaml
+representation_profile: /path/to/MathAgent/configs/representation/protein_ligand_adaptive_v1.yaml
+
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: true
+
+dataset:
+  manifest_path: /path/to/workdir/mathagent/external/atom3d_lba/prepared/user_smoke_120/manifest.csv
+  label_name: neglog_aff
+  source: atom3d_lba_identity30_official_user_smoke_subset
+  validate_paths: true
+  cv_group_identifier: null
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      atom3d_id: atom3d_id
+      source_split: source_split
+
+run:
+  run_id: atom3d-lba-user-smoke-120-v1
+  invariants: [PH, PL, CA, FPRC, EIC]
+  auto_resume_failed: false
+  max_attempts: 2
+
+label_retrieval_allowed: false

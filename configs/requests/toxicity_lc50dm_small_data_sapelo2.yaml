@@ -1,0 +1,44 @@
+version: mint-agent.user-request.v1
+request_id: toxicity-lc50dm-small-data
+goal: Run an end-to-end small-molecule LC50DM toxicity benchmark with the provided train/test split, train-only probe and adaptive representation selection, bounded LLM advisory proposals, and final fixed-test GBT evaluation.
+system_type: small_molecule
+task_type: regression
+primary_metric: PCC2
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2_progressive_test.yaml
+
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: true
+
+dataset:
+  manifest_path: /path/to/MathAgent/configs/artifacts/toxicity_manifests/lc50dm_manifest.sapelo2.csv
+  label_name: LC50DM
+  source: local_toxicity_lc50dm_train_test
+  validate_paths: true
+  cv_group_identifier: null
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      molecule: molecule_path
+    identifiers:
+      smiles: smiles
+      source_filename: source_filename
+
+run:
+  run_id: toxicity-lc50dm-small-data-v1
+  invariants: [PH, PL, CA, FPRC, EIC]
+  selection_objective: maximize_rank1
+  gbt_config: configs/gbt/toxicity_probe_gbt.yaml
+  auto_resume_failed: false
+  max_attempts: 2
+
+llm_scientific:
+  mode: advisory
+  env_file: ~/.config/mathagent/openai.env
+  cache_dir: /path/to/workdir/mathagent/cache/llm_scientific
+  timeout_seconds: 180
+  max_candidates: 10
+
+label_retrieval_allowed: false

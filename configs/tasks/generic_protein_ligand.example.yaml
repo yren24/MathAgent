@@ -1,0 +1,44 @@
+task_id: my_binding_dataset
+project_name: mint-agent
+system_type: protein_ligand
+task_type: regression
+primary_metric: pcc
+
+dataset_preparation:
+  provider: paired_structure_manifest
+  metadata_path: /path/to/labels_and_splits.csv
+  structures_root: /path/to/structures
+  output_manifest: /path/to/samples.csv
+  columns:
+    sample_id: sample_id
+    target: binding_affinity
+    split: split
+  templates:
+    protein: "{sample_id}/{sample_id}_protein.pdb"
+    ligand: "{sample_id}/{sample_id}_ligand.mol2"
+  identifiers:
+    pdb_id: sample_id
+
+dataset_manifest:
+  path: /path/to/samples.csv
+  label_name: binding_affinity
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+
+invariants: [PH, PL, CA, FPRC, EIC]
+
+legacy:
+  plbind_root: /path/to/embed_nn/plbind
+
+feature_generation:
+  output_root: /path/to/cache/plbind_features
+  structure_staging_root: /path/to/cache/plbind_structure_staging
+  validate_output_shape: true

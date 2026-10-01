@@ -1,0 +1,9 @@
+# Provisional V1 engineering policy. Projects may override every value.
+retrieval_enabled_by_default: false
+min_labeled_samples: 300
+allow_small_data_override: false
+accepted_match_statuses: [exact]
+conflict_absolute_tolerance: 0.0
+unit_conversions: []
+require_provenance: true
+allow_llm_inferred_numeric_labels: false

@@ -1,0 +1,30 @@
+model:
+  family: fixed_probe_ann
+  hpo: false
+  params:
+    config_id: plbind_probe_ann_v1
+    hidden_layers: [256, 64]
+    epochs: 80
+    batch_size: 64
+    learning_rate: 0.0005
+    weight_decay: 0.05
+    dropout: 0.10
+    random_seeds: [42, 1, 2]
+    normalize: StandardScaler
+    gradient_clip_norm: 1.0
+    device: auto
+    deterministic: true
+
+subsets:
+  baseline: [PL]
+  candidates:
+    - [PL]
+    - [PH]
+    - [PH, PL]
+
+metrics: [PCC, RMSE, MAE, R2]
+
+bootstrap:
+  replicates: 1000
+  ci_level: 0.95
+  random_seed: 2026

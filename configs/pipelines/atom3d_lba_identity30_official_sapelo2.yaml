@@ -1,0 +1,15 @@
+version: mint-agent.pipeline.v1
+run_id: identity30-official-progressive-v2
+task_config: configs/tasks/atom3d_lba_identity30_official_sapelo2.yaml
+execution_profile: configs/execution/sapelo2.yaml
+dataset_id: atom3d-lba-identity30-official
+
+# The task manifest controls split routing. This run uses train for probe/CV and
+# representation design, validation for progressive selection, and test once.
+invariants: [PH, PL, CA, FPRC, EIC]
+evidence_scope: full_train
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_fixed_gbt.yaml
+feature_diagnostic_top_k: 10
+auto_resume_failed: false
+max_attempts: 2

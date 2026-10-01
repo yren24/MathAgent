@@ -1,0 +1,78 @@
+profile_id: template_hpc
+profile_type: slurm_hpc
+
+host:
+  login: your.cluster.edu
+  user: your_user_id
+
+paths:
+  project_root: /home/your_user_id/mathagent
+  scratch_root: /scratch/your_user_id/mathagent
+  cache_root: /scratch/your_user_id/mathagent/cache
+  run_root: /scratch/your_user_id/mathagent/runs
+  log_root: /scratch/your_user_id/mathagent/logs
+
+python:
+  executable: python
+  # Optional: a cluster-specific shell script sourced before Python runs.
+  module_setup: null
+  module_load: []
+
+tools:
+  # Machine-specific path to the existing, separately validated legacy adapter.
+  plbind_root: /path/to/embed_nn/plbind
+
+scripts:
+  dataset_audit: scripts/slurm/run_dataset_audit.sbatch
+  representation_design: scripts/slurm/run_representation_design.sbatch
+  probe_selection: scripts/slurm/run_probe_selection.sbatch
+  probe_audit: scripts/slurm/run_probe_audit.sbatch
+  feature_batch: scripts/slurm/run_feature_batch.sbatch
+  feature_qc: scripts/slurm/run_feature_qc.sbatch
+  filtration_audit: scripts/slurm/run_filtration_audit.sbatch
+  feature_outlier_diagnostic: scripts/slurm/run_feature_outlier_diagnostic.sbatch
+  scout_oof: scripts/slurm/run_scout_oof.sbatch
+  scout_combine: scripts/slurm/run_scout_combine.sbatch
+  model_evaluation: scripts/slurm/run_model_evaluation.sbatch
+
+slurm_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 8gb
+  time: "01:00:00"
+
+slurm_feature_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "04:00:00"
+
+slurm_qc_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "02:00:00"
+
+slurm_filtration_audit_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "02:00:00"
+
+slurm_scout_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 64gb
+  time: "2-00:00:00"
+
+slurm_evaluation_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 64gb
+  time: "2-00:00:00"

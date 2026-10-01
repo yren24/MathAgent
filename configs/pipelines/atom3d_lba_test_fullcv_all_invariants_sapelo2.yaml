@@ -1,0 +1,14 @@
+version: mint-agent.pipeline.v1
+run_id: official-test-fullcv-all-invariants-v1
+task_config: configs/tasks/atom3d_lba_test_fullcv_sapelo2.yaml
+execution_profile: configs/execution/sapelo2.yaml
+dataset_id: atom3d-lba-test-fullcv
+
+# Complete the five-tool probe comparison. Every invariant remains an isolated
+# legacy-tool call and all candidates share the same folds and fixed GBT.
+invariants: [PL, PH, CA, FPRC, EIC]
+evidence_scope: full_train
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_fixed_gbt.yaml
+auto_resume_failed: true
+max_attempts: 3

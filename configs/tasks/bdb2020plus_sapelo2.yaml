@@ -1,0 +1,51 @@
+task_id: bdb2020plus
+project_name: mint-agent
+system_type: protein_ligand
+task_type: regression
+primary_metric: pcc
+representation_mode: dataset_adaptive
+
+dataset_manifest:
+  path: /path/to/workdir/mathagent/external/bdb2020plus/prepared/manifest.csv
+  label_name: pKa
+  source: https://github.com/THGLab/LP-PDBBind/tree/master/dataset
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+
+pair_schema:
+  schema_id: casf_protein_ligand_40_v1
+  protein_elements: [C, N, O, S]
+  ligand_elements: [C, N, O, S, P, F, Cl, Br, I, H]
+  rule: role_aware_cartesian_product
+  expected_pair_count: 40
+
+invariants: [PH, PL, CA, FPRC, EIC]
+gbt_config: plbind_feature_gbt_ensemble_v1
+aggregation: mean
+
+legacy:
+  plbind_root: /path/to/legacy/embed_nn/plbind
+  scratch_root: /path/to/scratch
+
+feature_generation:
+  output_root: /path/to/workdir/mathagent/external/bdb2020plus/cache/plbind_features
+  structure_staging_root: /path/to/workdir/mathagent/external/bdb2020plus/staging/structures
+  validate_output_shape: true
+
+data_audit:
+  manifest_split: test
+  tolerated_out_of_schema:
+    protein: [H]
+
+bootstrap:
+  n_bootstrap: 500
+  ci: 0.95
+  seed: 2026

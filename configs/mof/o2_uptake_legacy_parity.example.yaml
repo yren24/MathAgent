@@ -1,0 +1,29 @@
+# Phase 1 only: reproduce the legacy MOF category-specific implementation.
+# This is intentionally not a probe-selection or LLM-advisory configuration.
+pipeline_id: mof_o2_uptake_legacy_parity_v1
+system_type: mof
+task_type: regression
+property: O2uptakemolkg
+primary_metric: PCC
+category_schema: configs/mof/legacy_category_schema_v1.yaml
+legacy:
+  root: /path/to/legacy/embed_nn/mof
+  feature_script: mof_topology_features_forman120_final.py
+  gbt_script: mof_topology_gbt.py
+  data_dir: /path/to/workdir/mathagent/mof/2STD
+  cif_dir: /path/to/workdir/mathagent/mof/2019-04-11-ASR-public
+  feature_dir: /path/to/workdir/mathagent/mof/features/legacy_parity
+  result_dir: /path/to/workdir/mathagent/mof/runs/o2_uptake_legacy_parity_v1
+tools: [MOF_HOMOLOGY, MOF_LAPLACIAN, MOF_FACET, MOF_FORMAN, MOF_CURVATURE]
+feature_generation:
+  abc_norm: 64.0
+  # Values are owned by the legacy feature script in Phase 1.
+  overwrite: false
+evaluation:
+  mode: legacy_kfold_cv
+  folds: 5
+  repeat: 0
+llm:
+  mode: disabled
+probe_selection:
+  enabled: false

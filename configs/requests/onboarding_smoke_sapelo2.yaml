@@ -1,0 +1,29 @@
+version: mint-agent.user-request.v1
+request_id: user-intake-onboarding-smoke
+goal: Exercise the user entry point for a labeled protein-ligand regression dataset.
+system_type: protein_ligand
+task_type: regression
+primary_metric: PCC
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2.yaml
+representation_profile: /path/to/MathAgent/configs/representation/protein_ligand_adaptive_v1.yaml
+
+dataset:
+  manifest_path: /path/to/MathAgent/configs/data/onboarding_smoke_sapelo2.csv
+  label_name: pK
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+
+run:
+  run_id: user-intake-onboarding-smoke-v3
+  invariants: [PH, PL, CA, FPRC, EIC]
+  stop_after_stage: 0
+  auto_resume_failed: false
+  max_attempts: 2

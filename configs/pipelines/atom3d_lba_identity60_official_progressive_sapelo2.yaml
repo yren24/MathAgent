@@ -1,0 +1,22 @@
+version: mint-agent.pipeline.v1
+run_id: identity60-official-progressive-20260922
+task_config: configs/tasks/atom3d_lba_identity60_official_sapelo2.yaml
+execution_profile: configs/execution/sapelo2_progressive_test.yaml
+dataset_id: atom3d-lba-identity60-official
+
+# The task manifest controls split routing. This run uses train for probe/CV and
+# representation design, validation for progressive selection, and test once.
+invariants: [PH, PL, CA, FPRC, EIC]
+evidence_scope: full_train
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_adaptive_gbt.yaml
+feature_diagnostic_top_k: 10
+auto_resume_failed: false
+max_attempts: 2
+
+llm_scientific:
+  mode: advisory
+  env_file: ~/.config/mathagent/openai.env
+  cache_dir: /path/to/workdir/mathagent/cache/llm_scientific
+  timeout_seconds: 180
+  max_candidates: 10

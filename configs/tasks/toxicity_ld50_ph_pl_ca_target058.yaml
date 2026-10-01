@@ -1,0 +1,52 @@
+task_id: toxicity_ld50_ph_pl_ca_target058
+system_type: small_molecule
+task_type: regression
+primary_metric: PCC2
+
+dataset_manifest:
+  path: /path/to/MathAgent/configs/artifacts/toxicity_manifests/ld50_manifest.sapelo2.csv
+  label_name: LD50
+  source: local_toxicity_ld50_train_test
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      molecule: molecule_path
+    identifiers:
+      smiles: smiles
+      source_filename: source_filename
+
+label_retrieval:
+  allowed: false
+
+pair_schema:
+  schema_id: toxicity_30_pair_v1
+  global_order: [H, C, N, O, F, P, S, Cl, Br, I]
+  first_elements: [H, C, N, O]
+  second_elements: [H, C, N, O, F, P, S, Cl, Br, I]
+  rule: first_precedes_second
+  exclude_self_pairs: true
+  deduplicate_unordered_pairs: true
+  expected_pair_count: 30
+
+invariants: [PH, PL, CA]
+gbt_config: toxicity_feature_gbt_ensemble_3run_v1
+aggregation: mean
+
+selection_preferences:
+  selection_objective: satisfy_target
+  user_target: 0.58
+
+cv:
+  n_splits: 5
+  split_seed: 2026
+
+fidelity:
+  fractions: [0.10, 0.25, 0.50, 1.00]
+
+bootstrap:
+  n_bootstrap: 500
+  ci: 0.95
+  seed: 2026

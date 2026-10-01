@@ -1,0 +1,13 @@
+legacy_root: /path/to/legacy/embed_nn/plbind
+default_feature_module: feature.py
+tools:
+  PH:
+    legacy_name: homology
+  PL:
+    legacy_name: lap
+  CA:
+    legacy_name: facet
+  FPRC:
+    legacy_name: forman
+  EIC:
+    legacy_name: curvature

@@ -1,0 +1,62 @@
+version: mint-agent.user-request.v1
+request_id: hiqbind-exact-kd-ki-stratified-500
+goal: Evaluate adaptive mathematical features on a representative 500-complex HiQBind subset.
+system_type: protein_ligand
+task_type: regression
+primary_metric: PCC
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2.yaml
+representation_profile: /path/to/MathAgent/configs/representation/protein_ligand_adaptive_v1.yaml
+
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: false
+
+dataset:
+  manifest_path: /path/to/workdir/mathagent/external/hiqbind/stratified-500/prepared/manifest.csv
+  label_name: pAffinity
+  cv_group_identifier: pdb_id
+  source: https://doi.org/10.6084/m9.figshare.27430305.v3
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+      hiqbind_id: hiqbind_id
+  preparation:
+    provider: hiqbind
+    metadata_path: /path/to/workdir/mathagent/external/hiqbind/source/hiqbind_sm_metadata.csv
+    source_archive: /path/to/workdir/mathagent/external/hiqbind/source/hiqbind.tar.gz
+    extract_root: /path/to/workdir/mathagent/external/hiqbind/source
+    source_root: /path/to/workdir/mathagent/external/hiqbind/source/raw_data_hiq_sm
+    output_root: /path/to/workdir/mathagent/external/hiqbind/stratified-500/prepared/structures
+    output_manifest: /path/to/workdir/mathagent/external/hiqbind/stratified-500/prepared/manifest.csv
+    source_url: https://ndownloader.figshare.com/files/52379345
+    source_archive_md5: b6668cc3a54a5bd686683924037a18d6
+    metadata_url: https://ndownloader.figshare.com/files/52379375
+    metadata_md5: b473dcfe797dfb3d7dc9ffbec8ccbbd9
+    measurements: [kd, ki]
+    affinity_signs: ['=']
+    invalid_affinity_policy: skip
+    output_split: null
+    max_samples: 500
+    expected_sample_count: 500
+    selection:
+      strategy: stratified
+      random_seed: 2026
+      target_quantile_bins: 10
+      ligand_size_quantile_bins: 5
+      max_per_pdb_id: 1
+    pocket_cutoff_angstrom: 10.0
+    add_hydrogens: true
+    obabel: /path/to/MathAgent/scripts/sapelo2/obabel_2023a.sh
+
+run:
+  run_id: hiqbind-exact-kd-ki-stratified-500-v1
+  invariants: [PH, PL, CA, FPRC, EIC]
+  auto_resume_failed: false
+  max_attempts: 2

@@ -1,0 +1,13 @@
+schema_id: mof_legacy_c0_c7_call_v1
+category_order: [C0, C1, C2, C3, C4, C5, C6, C7, Call]
+all_atoms_category: Call
+unknown_policy: report_only
+categories:
+  C0: [Li, Na, K, Rb, Cs, Be, Mg, Ca, Sr, Ba, Al, Ga, In, Sn, Pb, Bi]
+  C1: [Sc, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Zn, Y, Zr, Nb, Mo, Ru, Rh, Pd, Ag, Cd, Hf, W, Re, Ir, Pt, Au, Hg, La, Ce, Pr, Nd, Sm, Eu, Gd, Tb, Dy, Ho, Er, Tm, Yb, Lu]
+  C2: [B, Si, Ge, As, Sb, Te]
+  C3: [F, Cl, Br, I]
+  C4: [H]
+  C5: [C]
+  C6: [N, P]
+  C7: [O, S, Se]

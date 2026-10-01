@@ -1,0 +1,30 @@
+task_id: toxicity_ld50
+system_type: small_molecule
+task_type: regression
+primary_metric: pcc2
+
+pair_schema:
+  schema_id: toxicity_30_pair_v1
+  global_order: [H, C, N, O, F, P, S, Cl, Br, I]
+  first_elements: [H, C, N, O]
+  second_elements: [H, C, N, O, F, P, S, Cl, Br, I]
+  rule: first_precedes_second
+  exclude_self_pairs: true
+  deduplicate_unordered_pairs: true
+  expected_pair_count: 30
+
+invariants: [PH, PL, CA, FPRC, EIC]
+gbt_config: plbind_feature_gbt_ensemble_v1
+aggregation: mean
+
+cv:
+  n_splits: 5
+  split_seed: 2026
+
+fidelity:
+  fractions: [0.10, 0.25, 0.50, 1.00]
+
+bootstrap:
+  n_bootstrap: 500
+  ci: 0.95
+  seed: 2026

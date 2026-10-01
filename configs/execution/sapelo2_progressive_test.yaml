@@ -1,0 +1,94 @@
+profile_id: sapelo2_progressive_test
+profile_type: slurm_hpc
+
+host:
+  login: ss-vsub2.gacrc.uga.edu
+  batch_login: sapelo2.gacrc.uga.edu
+  user: your_user_id
+
+paths:
+  project_root: /path/to/MathAgent
+  scratch_root: /path/to/workdir/mathagent
+  cache_root: /path/to/workdir/mathagent/cache
+  run_root: /path/to/workdir/mathagent/progressive-live/runs
+  log_root: /path/to/workdir/mathagent/progressive-live/logs
+
+python:
+  executable: python
+  module_setup: scripts/sapelo2/load_modules.sh
+  module_load:
+    - Python-bundle-PyPI/2025.04-GCCcore-14.2.0
+    - scikit-learn/1.7.0-gfbf-2025a
+    - PyYAML/6.0.2-GCCcore-14.2.0
+  user_packages:
+    - gudhi==3.13.0
+
+tools:
+  plbind_root: /path/to/legacy/embed_nn/plbind
+
+scripts:
+  dataset_preparation: scripts/slurm/run_dataset_preparation.sbatch
+  dataset_audit: scripts/slurm/run_dataset_audit.sbatch
+  representation_design: scripts/slurm/run_representation_design.sbatch
+  probe_selection: scripts/slurm/run_probe_selection.sbatch
+  probe_audit: scripts/slurm/run_probe_audit.sbatch
+  feature_batch: scripts/slurm/run_feature_batch.sbatch
+  feature_qc: scripts/slurm/run_feature_qc.sbatch
+  filtration_audit: scripts/slurm/run_filtration_audit.sbatch
+  feature_outlier_diagnostic: scripts/slurm/run_feature_outlier_diagnostic.sbatch
+  scout_oof: scripts/slurm/run_scout_oof.sbatch
+  scout_combine: scripts/slurm/run_scout_combine.sbatch
+  model_evaluation: scripts/slurm/run_model_evaluation.sbatch
+  acceptance_evaluation: scripts/slurm/run_acceptance_gbt_evaluation.sbatch
+  validation_evaluation: scripts/slurm/run_validation_gbt_evaluation.sbatch
+  frozen_test_evaluation: scripts/slurm/run_frozen_test_gbt_evaluation.sbatch
+  lifecycle: scripts/sapelo2/run_agent_lifecycle.sbatch
+
+slurm_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 8gb
+  time: "01:00:00"
+
+slurm_setup_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 8gb
+  time: "02:00:00"
+
+slurm_feature_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "04:00:00"
+
+slurm_qc_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "02:00:00"
+
+slurm_filtration_audit_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 16gb
+  time: "02:00:00"
+
+slurm_scout_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 64gb
+  time: "2-00:00:00"
+
+slurm_evaluation_defaults:
+  partition: batch
+  ntasks: 1
+  cpus_per_task: 1
+  mem: 64gb
+  time: "2-00:00:00"

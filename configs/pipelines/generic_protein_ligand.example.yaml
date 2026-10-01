@@ -1,0 +1,18 @@
+version: mint-agent.pipeline.v1
+run_id: first-run
+task_config: configs/tasks/generic_protein_ligand.example.yaml
+execution_profile: configs/execution/template_hpc.yaml
+dataset_id: my_binding_dataset
+invariants: [PH, PL, CA, FPRC, EIC]
+evidence_scope: full_train
+
+# Optional. Without this field, Scout derives and records a conservative target.
+# user_target: 0.75
+
+qc_config: configs/scout/v1.yaml
+audit_config: configs/scout/v1.yaml
+scout_config: configs/scout/v1.yaml
+gbt_config: configs/gbt/plbind_adaptive_gbt.yaml
+feature_diagnostic_top_k: 10
+auto_resume_failed: false
+max_attempts: 2

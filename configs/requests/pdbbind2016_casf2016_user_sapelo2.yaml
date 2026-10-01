@@ -1,0 +1,36 @@
+version: mint-agent.user-request.v1
+request_id: pdbbind2016-casf2016-user
+goal: Run a production protein-ligand binding-affinity benchmark using the PDBbind 2016 refined training split and the CASF-2016 test split, preserving the provided train/test protocol and producing a final report in English.
+system_type: protein_ligand
+task_type: regression
+primary_metric: PCC
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2.yaml
+representation_profile: /path/to/MathAgent/configs/representation/protein_ligand_adaptive_v1.yaml
+
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: false
+
+dataset:
+  manifest_path: /path/to/workdir/mathagent/external/pdbbind2016_casf2016/manifest.csv
+  label_name: pK
+  source: pdbbind2016_refined_with_casf2016_split
+  validate_paths: true
+  cv_group_identifier: pdb_id
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+
+run:
+  run_id: pdbbind2016-casf2016-production-v2
+  invariants: [PH, PL, CA, FPRC, EIC]
+  auto_resume_failed: false
+  max_attempts: 2
+
+label_retrieval_allowed: false

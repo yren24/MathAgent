@@ -1,0 +1,61 @@
+version: mint-agent.representation-profile.v1
+representation_mode: dataset_adaptive
+
+# Experimental extended-filtration candidate. This profile is evaluated
+# independently and must not replace the q95 default without evidence.
+pair_schema:
+  schema_id: protein_ligand_heavy_atom_36_v1
+  protein_elements: [C, N, O, S]
+  ligand_elements: [C, N, O, S, P, F, Cl, Br, I]
+  rule: role_aware_cartesian_product
+  expected_pair_count: 36
+
+representation_design:
+  adapter_supported_elements:
+    protein: [C, N, O, S]
+    ligand: [C, N, O, S, P, F, Cl, Br, I, H]
+  hydrogen_policy:
+    default_mode: auto
+    min_explicit_sample_fraction: 0.95
+  metal_awareness:
+    enabled: true
+    protein_elements: [Ca, Cd, Co, Cs, Cu, Fe, Hg, K, Mg, Mn, Na, Ni, Sr, Zn]
+    min_sample_fraction: 0.005
+    min_samples: 10
+    max_ligand_distance_angstrom: 6.0
+    min_proximal_samples: 10
+  support:
+    min_element_support_fraction: 0.005
+    min_element_support_samples: 10
+    min_pair_support_fraction: 0.005
+    min_pair_support_samples: 10
+    max_element_pair_channels: 50
+    small_molecule_self_pairs: false
+  filtration:
+    local_distance_quantile: 0.95
+    dataset_distance_quantile: 0.99
+    margin_factor: 1.10
+    default_step_angstrom: 0.1
+    allowed_steps_angstrom: [0.1, 0.2, 0.25, 0.5, 1.0]
+    max_points: 200
+    include_zero: true
+    fixed_point_count: 50
+  eic_tau_start: 0.2
+  eic_tau_stop: 5.0
+  eic_tau_step: 0.1
+  saturation_audit_enabled: false
+  distance_chunk_size: 2048
+
+cv:
+  n_splits: 5
+  split_seed: 2026
+
+data_audit:
+  manifest_split: train
+  tolerated_out_of_schema:
+    # Common pocket metals/ions and non-channel protein atoms are audited and
+    # tolerated here for new protein-ligand datasets, but the current
+    # parity-tested legacy adapter still exposes only C/N/O/S protein channels
+    # for feature generation.
+    protein: [H, Ca, Cd, Co, Cs, Cu, Fe, Hg, K, Mg, Mn, Na, Ni, P, Se, Sr, Zn]
+    ligand: [H]

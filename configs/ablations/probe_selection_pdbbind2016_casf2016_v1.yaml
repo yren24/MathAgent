@@ -1,0 +1,47 @@
+version: mint-agent.ablation-spec.v1
+ablation_id: pdbbind2016-casf2016-probe-selection-v1
+question: Does the train-only stratified Probe provide more representative and reproducible Scout ranking than an equal-budget uniform-random Probe?
+
+# This file records the experimental contract. The output paths are deliberately
+# cluster-specific and are supplied by the Sapelo2 launch command.
+fixed_controls:
+  system_type: protein_ligand
+  task_type: regression
+  primary_metric: PCC
+  modeling_scope: train_only
+  protected_test_labels_available_to_selection: false
+  probe_size: 750
+  invariants: [PH, PL, CA, FPRC, EIC]
+  model_family: fixed_gbt
+  gbt_runs: 3
+  cv_folds: 5
+  representation: frozen_adaptive_representation
+  consensus: arithmetic_mean
+
+arms:
+  - id: stratified_pair_coverage
+    sampling_strategy: stratified_pair_coverage
+    seed: 2026
+    source: existing_frozen_probe
+  - id: uniform_random_seed2027
+    sampling_strategy: uniform_random
+    seed: 2027
+  - id: uniform_random_seed2028
+    sampling_strategy: uniform_random
+    seed: 2028
+  - id: uniform_random_seed2029
+    sampling_strategy: uniform_random
+    seed: 2029
+
+outcomes:
+  - probe_representativeness_audit
+  - feature_qc_and_filtration_audit
+  - probe_oof_pcc
+  - all_subset_frozen_priority_order
+  - rank_agreement_with_stratified_baseline
+  - compute_cost
+
+interpretation:
+  random_arms_are_aggregated: true
+  random_seed_cherry_picking_forbidden: true
+  random_arm_wins_are_not_used_to_change_the_production_policy_without_a_prespecified_followup: true

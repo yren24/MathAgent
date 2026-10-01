@@ -1,0 +1,34 @@
+version: mint-agent.user-request.v1
+request_id: atom3d-lba-onboarding-live-tolerated
+goal: Run a protein-ligand binding-affinity regression experiment using GBT. Preserve
+  the supplied train, validation, and test split; validate structure paths; use the
+  reviewed representation policy that tolerates common protein pocket metals/ions
+  without adding them to the current parity-tested feature channels; and produce
+  artifacts and reports in English.
+system_type: protein_ligand
+task_type: regression
+primary_metric: PCC
+execution_profile: /path/to/MathAgent/configs/execution/sapelo2.yaml
+representation_profile: /path/to/MathAgent/configs/representation/protein_ligand_adaptive_v1.yaml
+dataset:
+  manifest_path: /path/to/workdir/mathagent/external/atom3d_lba/prepared/identity30_official/manifest.csv
+  label_name: neglog_aff
+  validate_paths: true
+  source: openai_responses_api
+  preparation: null
+  cv_group_identifier: null
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+run:
+  run_id: atom3d-lba-onboarding-live-tolerated
+  invariants: [PH, PL, CA, FPRC, EIC]
+  user_target: null
+labels:
+  min_labeled_samples: 300
+  allow_small_data_override: false
+label_retrieval_allowed: false

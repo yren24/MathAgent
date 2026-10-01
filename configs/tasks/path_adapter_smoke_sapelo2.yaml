@@ -1,0 +1,28 @@
+task_id: path_adapter_smoke
+project_name: mint-agent
+system_type: protein_ligand
+task_type: regression
+primary_metric: pcc
+representation_mode: legacy_casf
+
+dataset_manifest:
+  path: ../data/sapelo2_path_adapter_smoke.csv
+  label_name: binding_affinity
+  validate_paths: true
+  columns:
+    sample_id: sample_id
+    target: target
+    split: split
+    roles:
+      protein: protein_path
+      ligand: ligand_path
+    identifiers:
+      pdb_id: pdb_id
+
+legacy:
+  plbind_root: /path/to/legacy/embed_nn/plbind
+
+feature_generation:
+  output_root: /path/to/workdir/mathagent/path_adapter_smoke/features
+  structure_staging_root: /path/to/workdir/mathagent/path_adapter_smoke/structures
+  validate_output_shape: true

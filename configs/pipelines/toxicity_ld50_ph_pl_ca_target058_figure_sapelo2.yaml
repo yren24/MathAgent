@@ -1,0 +1,22 @@
+version: mint-agent.toxicity-workflow.v1
+repository_root: /path/to/MathAgent
+run_id: ld50-ph-pl-ca-target058-figure-20260924
+task_config: configs/tasks/toxicity_ld50_ph_pl_ca_target058.yaml
+execution_profile: configs/execution/sapelo2_progressive_test.yaml
+dataset_id: toxicity_ld50_ph_pl_ca_target058
+
+primary_metric: PCC2
+invariants: [PH, PL, CA]
+selection_objective: satisfy_target
+user_target: 0.58
+
+workflow_root: /path/to/workdir/mathagent/progressive-live/toxicity/toxicity_ld50_ph_pl_ca_target058/ld50-ph-pl-ca-target058-figure-20260924
+feature_root: /path/to/workdir/mathagent/cache/toxicity_features/LD50
+gbt_config: configs/gbt/toxicity_probe_gbt.yaml
+legacy_root: /path/to/workdir/mathagent/external/toxicity-phase0/legacy
+
+llm_scientific:
+  mode: advisory
+  model: gpt-5.6-terra
+  env_file: ~/.config/mathagent/openai.env
+  cache_dir: /path/to/workdir/mathagent/cache/llm_scientific

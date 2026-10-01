@@ -1,0 +1,11 @@
+config_id: plbind_feature_gbt_ensemble_v1
+normalize: StandardScaler
+n_estimators: 4000
+max_depth: 7
+min_samples_split: 5
+learning_rate: 0.01
+subsample: 0.5
+max_features: sqrt
+random_state: 42
+n_runs: 10
+source: /path/to/legacy/embed_nn/plbind/feature_gbt.py
