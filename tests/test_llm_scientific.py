@@ -126,7 +126,7 @@ def test_duplicate_stratification_is_rejected_by_python_validator(tmp_path: Path
     context = LLMScientificContext(
         mode="shadow",
         model="test-model",
-        api_key="top-secret",
+        api_key="dummy",
         planner=planner,
         critic=lambda *_args, **_kwargs: (_valid_critique(), {"used": True}),
     )
@@ -403,7 +403,7 @@ def test_scientific_critic_uses_probe_summaries_only(tmp_path: Path):
 def test_llm_env_file_parser_supports_export_and_quotes(tmp_path: Path):
     env_file = tmp_path / "openai.env"
     env_file.write_text(
-        "export OPENAI_MODEL='test-model'\nOPENAI_API_KEY=\"top-secret\"\n",
+        "export OPENAI_MODEL='test-model'\nOPENAI_API_KEY=\"dummy\"\n",
         encoding="utf-8",
     )
 
@@ -411,5 +411,5 @@ def test_llm_env_file_parser_supports_export_and_quotes(tmp_path: Path):
 
     assert values == {
         "OPENAI_MODEL": "test-model",
-        "OPENAI_API_KEY": "top-secret",
+        "OPENAI_API_KEY": "dummy",
     }

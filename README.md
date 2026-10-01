@@ -21,19 +21,20 @@ explicit train/test boundaries.
 
 ## Table of Contents
 
-- [Why MathAgent](#why-mathagent)
-- [How It Works](#how-it-works)
-- [Tools](#tools)
-- [User-Guided Execution Modes](#user-guided-execution-modes)
+- [Project Rationale](#project-rationale)
+- [Workflow at a Glance](#workflow-at-a-glance)
+- [Mathematical Tool Layer](#mathematical-tool-layer)
+- [Execution Policies](#execution-policies)
 - [Installation](#installation)
-- [Running MathAgent](#running-mathagent)
-- [Reproducing Experiments](#reproducing-experiments)
-- [Code Structure](#code-structure)
+- [Quick Start](#quick-start)
+- [Experiment Reproduction](#experiment-reproduction)
+- [Current Validation Status](#current-validation-status)
+- [Repository Layout](#repository-layout)
 - [Security and Data Policy](#security-and-data-policy)
 
 ---
 
-## Why MathAgent
+## Project Rationale
 
 Mathematical molecular representations such as persistent homology, persistent
 Laplacian, commutative algebra descriptors, and curvature summaries can capture
@@ -55,7 +56,7 @@ MathAgent is designed for this setting:
 The repository intentionally does not include raw datasets, generated feature
 matrices, private API keys, Slurm logs, or experiment caches.
 
-## How It Works
+## Workflow at a Glance
 
 MathAgent follows a four-stage agentic workflow:
 
@@ -72,7 +73,7 @@ proposals are allowed. The final ranking is empirical: feature QC first, probe
 performance next, stability for close candidates, and computational cost as a
 late tie-breaker.
 
-## Tools
+## Mathematical Tool Layer
 
 MathAgent wraps existing mathematical feature implementations through explicit
 tool adapters. The currently supported invariant families are:
@@ -94,7 +95,7 @@ The repository also contains supporting tools for:
 - GBT training and evaluation;
 - artifact caching and provenance reporting.
 
-## User-Guided Execution Modes
+## Execution Policies
 
 MathAgent can run in a target-constrained mode or a best-available mode. The
 figure below shows two example decision traces using the same workflow logic.
@@ -157,7 +158,7 @@ cp .env.example ~/.config/mathagent/openai.env
 
 Do not commit real credentials.
 
-## Running MathAgent
+## Quick Start
 
 ### 1. Structured YAML request
 
@@ -244,11 +245,11 @@ The login or submit node should only start and inspect the workflow. Dataset
 preparation, feature generation, QC, probe evaluation, and final GBT evaluation
 should run as compute jobs.
 
-The `scripts/sapelo2/` directory is a site-specific example profile used during
-development. It is useful as a template for Sapelo2 users, but it is not needed
-for users on other HPC systems.
+The `scripts/sapelo2/` directory is a site-specific example profile. It is
+useful as a template for Sapelo2 users, but it is not needed for users on other
+HPC systems.
 
-## Reproducing Experiments
+## Experiment Reproduction
 
 For a clone-to-run checklist, see [REPRODUCE.md](REPRODUCE.md).
 
@@ -262,7 +263,32 @@ At a high level:
 | Run toxicity workflows | Molecule manifest, molecule files, labels, execution profile, and external toxicity feature tools. |
 | Reproduce paper-scale experiments | The above plus benchmark datasets and cluster compute. |
 
-## Code Structure
+## Current Validation Status
+
+The public repository contains the workflow code and configuration templates,
+not the private datasets or generated artifacts. The following parts are
+expected to work directly after installation:
+
+- Python package import and CLI entry points;
+- request validation and config generation;
+- deterministic pipeline planning;
+- Slurm job-plan construction;
+- unit tests that use synthetic fixtures.
+
+The following parts require user-supplied external inputs:
+
+- full protein-ligand feature generation requires structure files, labels, and
+  the external `embed_nn/plbind` feature-tool directory;
+- full toxicity feature generation requires molecule files, labels, and the
+  corresponding external legacy feature implementation;
+- LLM intake or advisory requires a user-provided API key through the local
+  environment.
+
+In other words, MathAgent is a runnable workflow framework, but the full
+scientific runs are intentionally not self-contained because the datasets,
+legacy feature tools, cluster paths, and API credentials are user-specific.
+
+## Repository Layout
 
 ```text
 MathAgent/
