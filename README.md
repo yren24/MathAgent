@@ -158,6 +158,9 @@ cp .env.example ~/.config/mathagent/openai.env
 
 Do not commit real credentials.
 
+`OPENAI_MODEL` is not fixed by MathAgent. Use any OpenAI model name available
+to your account and compatible with the API endpoint used by the workflow.
+
 ## Quick Start
 
 ### 1. Structured YAML request
@@ -182,7 +185,7 @@ mathagent start \
 
 ```bash
 export OPENAI_API_KEY="..."
-export OPENAI_MODEL="gpt-5.6-terra"
+export OPENAI_MODEL="<your-openai-model>"
 
 mathagent start \
   --prompt-file /path/to/user_prompt.txt \

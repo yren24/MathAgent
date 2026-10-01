@@ -17,6 +17,7 @@ legacy_root: /path/to/workdir/mathagent/external/toxicity-phase0/legacy
 
 llm_scientific:
   mode: advisory
-  model: gpt-5.6-terra
+  # Model is read from OPENAI_MODEL in env_file or the process environment.
+  # Use any OpenAI model available to your account/API environment.
   env_file: ~/.config/mathagent/openai.env
   cache_dir: /path/to/workdir/mathagent/cache/llm_scientific
