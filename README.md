@@ -127,13 +127,18 @@ python -m pip install -e ".[dev,datasets]"  # optional dataset readers
 python -m pip install -e ".[dev,ann]"       # optional ANN diagnostics
 ```
 
-For HPC use, edit the execution profile before running:
+For HPC use, start from the generic execution profile and adapt it to your
+cluster:
 
 ```text
 configs/execution/template_hpc.yaml
-configs/execution/sapelo2.yaml
-scripts/sapelo2/load_modules.sh
+scripts/slurm/
 ```
+
+Site-specific profiles such as `configs/execution/sapelo2.yaml` are examples,
+not requirements. Users on other clusters should copy `template_hpc.yaml`, edit
+paths/modules/partitions, and keep their local profile out of version control if
+it contains private paths.
 
 ## API Keys
 
@@ -218,26 +223,30 @@ python -m mint_scout.run_pipeline status \
   --config configs/pipelines/generic_protein_ligand.example.yaml
 ```
 
-### 4. Sapelo2 launcher
+### 4. Generic Slurm/HPC execution
 
-Edit `configs/execution/sapelo2.yaml` first:
+Edit a cluster execution profile first:
 
 - `paths.project_root`;
 - `paths.scratch_root`;
 - `tools.plbind_root`;
-- module setup in `scripts/sapelo2/load_modules.sh`.
+- module setup, partition, memory, CPU, and time limits.
 
-Then submit only the lightweight launcher from the submit node:
+For most clusters, use the generic pipeline command:
 
 ```bash
-env PIPELINE_CONFIG=configs/pipelines/generic_protein_ligand.example.yaml \
-    PIPELINE_COMMAND=submit \
-    EXECUTE=1 \
-  sbatch scripts/sapelo2/run_pipeline_launcher.sbatch
+mathagent submit \
+  --config configs/pipelines/generic_protein_ligand.example.yaml \
+  --execute
 ```
 
-The login node starts and inspects the workflow. Dataset preparation, feature
-generation, QC, probe evaluation, and final GBT evaluation run as compute jobs.
+The login or submit node should only start and inspect the workflow. Dataset
+preparation, feature generation, QC, probe evaluation, and final GBT evaluation
+should run as compute jobs.
+
+The `scripts/sapelo2/` directory is a site-specific example profile used during
+development. It is useful as a template for Sapelo2 users, but it is not needed
+for users on other HPC systems.
 
 ## Reproducing Experiments
 
@@ -264,7 +273,7 @@ MathAgent/
 ├── configs/                  Request, task, representation, GBT, and HPC configs
 ├── scripts/
 │   ├── slurm/                Generic Slurm wrappers
-│   ├── sapelo2/              Sapelo2-oriented launchers
+│   ├── sapelo2/              Optional site-specific launcher examples
 │   └── diagnostics/          Offline comparison helpers
 ├── src/mint_scout/           Core Python package
 │   ├── agent/                LLM intake, advisory, explanation, graph helpers

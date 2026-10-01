@@ -79,7 +79,7 @@ For protein-ligand workflows:
    ligand paths.
 2. Place protein and ligand structure files on disk.
 3. Install or copy the legacy `embed_nn/plbind` feature implementation.
-4. Edit `configs/execution/template_hpc.yaml` or `configs/execution/sapelo2.yaml`.
+4. Copy and edit `configs/execution/template_hpc.yaml` for your own cluster.
 5. Set `tools.plbind_root` to the legacy feature-tool directory.
 
 For toxicity workflows:
@@ -108,14 +108,10 @@ mathagent submit \
   --execute
 ```
 
-or submit the lightweight Sapelo2 launcher:
+Site-specific launcher scripts may also be used when available. For example,
+Sapelo2 users can adapt the scripts under `scripts/sapelo2/`, but those scripts
+are examples rather than a dependency of MathAgent.
 
-```bash
-env PIPELINE_CONFIG=configs/pipelines/generic_protein_ligand.example.yaml \
-    PIPELINE_COMMAND=submit \
-    EXECUTE=1 \
-  sbatch scripts/sapelo2/run_pipeline_launcher.sbatch
-```
 
 ### C4. Monitor and resume
 

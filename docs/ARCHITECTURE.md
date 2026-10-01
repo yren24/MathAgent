@@ -71,8 +71,8 @@ or artifacts.
 
 The Phase 4 execution engine is implemented against a feature-provider interface and synthetic tests.
 The production provider drives the legacy PLBind feature scripts as isolated calls, validates and loads
-their cached arrays, and flattens each invariant tensor into the legacy GBT input vector. The Sapelo2
-Phase 4 smoke command exercises this provider under Slurm and writes an auditable JSON report.
+their cached arrays, and flattens each invariant tensor into the legacy GBT input vector. Site-specific
+smoke commands can exercise this provider under Slurm and write auditable JSON reports.
 
 Dataset-adaptive representation design now streams the modeling-pool structures twice: element support
 and pair construction first, robust geometry profiling second. It freezes the resulting pair order,
@@ -324,7 +324,7 @@ already-registered plans stop in `NEEDS_REVIEW`. Failure resubmission is opt-in 
 the configured attempt bound before every retry; a failed job is never handled by the initial-submit
 path. A graph `COMPLETE` or exhausted `TARGET_NOT_REACHED` state is terminal. The generic Slurm wrapper
 receives paths and module initialization through environment variables; a cluster-specific execution
-profile may override the lifecycle script, as the Sapelo2 profile does.
+profile may override the lifecycle script when needed.
 
 `feature_tool_node` remains generic. It calls registered feature tools such as `PH`, `PL`, `FPRC`, `EIC`, and `CA`. New mathematical methods should add a wrapper, registry entry, config schema, and tests without changing the graph shape.
 
