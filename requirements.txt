@@ -1,0 +1,7 @@
+numpy>=1.23
+scipy>=1.9
+scikit-learn>=1.2
+PyYAML>=6.0
+
+# Optional agent workflow support.
+langgraph>=1.0,<2.0

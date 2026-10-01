@@ -1,65 +1,113 @@
 # MathAgent
 
-MathAgent is an agentic scientific workflow for adaptive mathematical
-representation selection in molecular modeling. It combines deterministic Python
-pipelines, Slurm execution, cache-aware artifact tracking, and optional LLM
-advisory nodes.
+**An Agentic Framework for Adaptive Mathematical Representation Selection in Molecular Modeling**
 
-The current implementation supports:
+MathAgent is a LangGraph-oriented scientific agent that turns a user request,
+dataset manifest, and existing mathematical invariant tools into an auditable
+representation-search workflow. It supports protein-ligand binding affinity and
+quantitative small-molecule toxicity tasks, while keeping scientific decisions
+grounded in deterministic Python validation, cached feature artifacts, and
+explicit train/test boundaries.
 
-- protein-ligand binding affinity workflows;
-- quantitative small-molecule toxicity workflows;
-- legacy mathematical feature tools exposed as isolated feature generators;
-- GBT-based probe screening and final evaluation;
-- optional LangGraph orchestration and LLM advisory output.
+![MathAgent framework](figures/main.png)
 
-The Python package currently keeps the internal module name `mint_scout` for
-backward compatibility, while the public project and CLI are named
-`MathAgent`/`mathagent`.
+> **DataAgent** parses the user objective and validates dataset structure;
+> **RepAgent** proposes and validates adaptive representation settings;
+> **ProbeAgent** screens method combinations on a representative train-only
+> probe; **EvalAgent** progressively evaluates full-scale candidates and stops
+> according to the user-specified mode.
 
-## Core Idea
+---
 
-MathAgent does not ask the LLM to directly choose scientific results. The LLM is
-used as a bounded advisor: it can parse a user request, suggest candidate
-representation strategies, and explain the final run. The numerical choices are
-validated by deterministic Python code.
+## Table of Contents
 
-The workflow keeps a persistent audit trail:
+- [Why MathAgent](#why-mathagent)
+- [How It Works](#how-it-works)
+- [Tools](#tools)
+- [User-Guided Execution Modes](#user-guided-execution-modes)
+- [Installation](#installation)
+- [Running MathAgent](#running-mathagent)
+- [Reproducing Experiments](#reproducing-experiments)
+- [Code Structure](#code-structure)
+- [Security and Data Policy](#security-and-data-policy)
 
-```text
-user request
-  -> structured request / task config
-  -> data and split validation
-  -> train-only adaptive representation design
-  -> representative probe selection
-  -> feature generation and QC
-  -> probe GBT ranking and stability checks
-  -> progressive full-scale candidate evaluation
-  -> final report and artifact manifest
-```
+---
 
-The main mathematical feature families are:
+## Why MathAgent
 
-- `PH`: persistent homology summaries;
-- `PL`: persistent Laplacian summaries;
-- `CA`: commutative algebra / facet-vector summaries;
-- `FPRC`: Forman-Ricci curvature summaries;
-- `EIC`: element-interactive curvature summaries.
+Mathematical molecular representations such as persistent homology, persistent
+Laplacian, commutative algebra descriptors, and curvature summaries can capture
+different structural signals. In practice, however, the useful representation is
+dataset-, task-, split-, and model-dependent.
 
-## Repository Contents
+MathAgent is designed for this setting:
 
-```text
-src/mint_scout/        Core workflow, data, feature, model, and execution code
-configs/              Template task, pipeline, execution, GBT, and request configs
-scripts/slurm/        Generic Slurm wrappers
-scripts/sapelo2/      Sapelo2-oriented wrappers with user-editable paths
-scripts/diagnostics/  Offline diagnostic and comparison helpers
-tests/                Unit and workflow tests
-docs/                 Architecture notes
-```
+- users can specify the prediction task, allowed methods, metric, split, and
+  stopping goal;
+- LLMs can propose representation and probe strategies, but cannot override
+  deterministic validation;
+- feature tools are treated as isolated scientific tools rather than rewritten
+  inside the agent;
+- probe screening is used to reduce expensive full-scale evaluation;
+- every generated config, feature artifact, ranking, and final report is
+  traceable.
 
-Large data files, generated feature matrices, run artifacts, Slurm logs, caches,
-and API keys are intentionally not included.
+The repository intentionally does not include raw datasets, generated feature
+matrices, private API keys, Slurm logs, or experiment caches.
+
+## How It Works
+
+MathAgent follows a four-stage agentic workflow:
+
+| Stage | Agent role | Main evidence produced |
+|-------|------------|------------------------|
+| **Task and data understanding** | Parse natural language or YAML; validate task type, metric, dataset manifest, label availability, split, and user constraints. | Structured request, task config, preflight report. |
+| **Adaptive representation design** | Summarize train-only molecular statistics; generate bounded representation candidates; validate element/channel support and filtration settings. | Frozen representation specs and representation advisory record. |
+| **Probe-based screening** | Select a representative train-only probe; compute requested invariant blocks; run probe GBT/CV; rank method combinations with QC and stability checks. | Probe selection, feature QC, probe rankings, promoted candidates. |
+| **Progressive evaluation** | Reuse cached full-scale feature blocks; evaluate frozen promoted candidates; stop on target satisfaction or complete the best-available pool. | Final metrics, selected combination, stopping reason, decision trace. |
+
+LLM use is optional and bounded. In advisory mode, the LLM may propose adaptive
+settings or probe strategies, but Python validators decide whether those
+proposals are allowed. The final ranking is empirical: feature QC first, probe
+performance next, stability for close candidates, and computational cost as a
+late tie-breaker.
+
+## Tools
+
+MathAgent wraps existing mathematical feature implementations through explicit
+tool adapters. The currently supported invariant families are:
+
+| Code | Representation family | Typical role |
+|------|------------------------|--------------|
+| `PH` | Persistent homology summaries | Multiscale connected-component and loop information. |
+| `PL` | Persistent Laplacian summaries | Topological-spectral structural information. |
+| `CA` | Commutative algebra / facet-vector summaries | Algebraic and combinatorial molecular structure. |
+| `FPRC` | Forman persistent Ricci curvature summaries | Multiscale discrete curvature information. |
+| `EIC` | Element-interactive curvature summaries | Element-resolved geometric/curvature information. |
+
+The repository also contains supporting tools for:
+
+- dataset audit and manifest validation;
+- adaptive element/channel and filtration design;
+- representative probe selection;
+- feature QC and filtration repair;
+- GBT training and evaluation;
+- artifact caching and provenance reporting.
+
+## User-Guided Execution Modes
+
+MathAgent can run in a target-constrained mode or a best-available mode. The
+figure below shows two example decision traces using the same workflow logic.
+
+![MathAgent user-guided execution modes](figures/userguide_new.png)
+
+- **Target-constrained mode:** stop after the first full-scale candidate that
+  reaches the user-specified target.
+- **Best-available mode:** evaluate the frozen promoted top-k candidate pool and
+  return the best candidate under the selected protocol.
+
+Both modes freeze candidate order before full-scale evaluation and preserve the
+train/test information boundary.
 
 ## Installation
 
@@ -74,56 +122,39 @@ python -m pip install -e ".[dev]"
 Optional extras:
 
 ```bash
-python -m pip install -e ".[dev,agent]"     # LangGraph workflow support
+python -m pip install -e ".[dev,agent]"     # LangGraph support
 python -m pip install -e ".[dev,datasets]"  # optional dataset readers
 python -m pip install -e ".[dev,ann]"       # optional ANN diagnostics
 ```
 
-On HPC systems, prefer the site-provided Python modules when available. The
-Sapelo2 helper scripts source `scripts/sapelo2/load_modules.sh`; edit that file
-and `configs/execution/sapelo2.yaml` for your own account and scratch paths.
+For HPC use, edit the execution profile before running:
 
-## External Inputs Required
+```text
+configs/execution/template_hpc.yaml
+configs/execution/sapelo2.yaml
+scripts/sapelo2/load_modules.sh
+```
 
-MathAgent expects datasets and legacy feature implementations to be supplied
-outside the repository.
+## API Keys
 
-For protein-ligand workflows, provide:
-
-- a manifest or dataset provider configuration;
-- protein and ligand structure paths;
-- labels and train/test split columns when available;
-- the legacy `embed_nn/plbind` feature tools, configured through an execution
-  profile or `configs/invariants/plbind_tools.yaml`.
-
-For toxicity workflows, provide:
-
-- a molecule manifest;
-- molecule structure directories;
-- labels and train/test split columns;
-- the legacy toxicity feature implementation path if using the wrapped legacy
-  generator.
-
-## API Key Setup
-
-LLM features are optional. Copy the example file and fill it locally:
+LLM features are optional. Copy the example and fill it locally:
 
 ```bash
 cp .env.example .env
 ```
 
-or create a user-level file:
+or use a user-level file:
 
 ```bash
 mkdir -p ~/.config/mathagent
 cp .env.example ~/.config/mathagent/openai.env
 ```
 
-Do not commit real API keys.
+Do not commit real credentials.
 
-## Running From a Structured YAML Request
+## Running MathAgent
 
-Start from an editable request file:
+### 1. Structured YAML request
 
 ```bash
 mathagent start \
@@ -131,7 +162,8 @@ mathagent start \
   --output-dir runs/intake/my-run
 ```
 
-To submit the generated pipeline through the configured Slurm profile:
+Add `--execute` to submit the resolved workflow through the configured Slurm
+profile:
 
 ```bash
 mathagent start \
@@ -140,13 +172,7 @@ mathagent start \
   --execute
 ```
 
-The command writes a resolved request, task config, pipeline config, preflight
-report, and launch plan in the output directory.
-
-## Running From a Natural-Language Prompt
-
-Natural-language intake requires an OpenAI-compatible API key in the environment
-and a model name.
+### 2. Natural-language intake
 
 ```bash
 export OPENAI_API_KEY="..."
@@ -160,7 +186,7 @@ mathagent start \
   --output-dir runs/intake/natural-request
 ```
 
-To also allow LLM scientific advisory for representation/probe strategy:
+To enable LLM scientific advisory for representation/probe strategy:
 
 ```bash
 mathagent start \
@@ -175,13 +201,7 @@ mathagent start \
   --execute
 ```
 
-The advisory output is treated as hypothesis generation. Deterministic
-validation still enforces split boundaries, data availability, feature QC,
-allowed methods, candidate ranking rules, and stopping policy.
-
-## Running a Pipeline Directly
-
-Use `mathagent` or the module entry point:
+### 3. Direct pipeline launcher
 
 ```bash
 mathagent plan --config configs/pipelines/generic_protein_ligand.example.yaml
@@ -191,14 +211,14 @@ mathagent resume --config configs/pipelines/generic_protein_ligand.example.yaml 
 mathagent report --config configs/pipelines/generic_protein_ligand.example.yaml
 ```
 
-Equivalent module form:
+Equivalent module entry point:
 
 ```bash
 python -m mint_scout.run_pipeline status \
   --config configs/pipelines/generic_protein_ligand.example.yaml
 ```
 
-## Sapelo2 Launcher Example
+### 4. Sapelo2 launcher
 
 Edit `configs/execution/sapelo2.yaml` first:
 
@@ -207,7 +227,7 @@ Edit `configs/execution/sapelo2.yaml` first:
 - `tools.plbind_root`;
 - module setup in `scripts/sapelo2/load_modules.sh`.
 
-Then submit only the lightweight launcher from the login/submit node:
+Then submit only the lightweight launcher from the submit node:
 
 ```bash
 env PIPELINE_CONFIG=configs/pipelines/generic_protein_ligand.example.yaml \
@@ -216,28 +236,62 @@ env PIPELINE_CONFIG=configs/pipelines/generic_protein_ligand.example.yaml \
   sbatch scripts/sapelo2/run_pipeline_launcher.sbatch
 ```
 
-Feature generation, QC, probe evaluation, and final GBT evaluation are submitted
-as compute jobs. The login node should only launch and inspect workflows.
+The login node starts and inspects the workflow. Dataset preparation, feature
+generation, QC, probe evaluation, and final GBT evaluation run as compute jobs.
 
-## Candidate Ranking Policy
+## Reproducing Experiments
 
-The ranking policy is deterministic:
+For a clone-to-run checklist, see [REPRODUCE.md](REPRODUCE.md).
 
-1. Candidate features must pass hard QC gates: valid shape, no invalid numeric
-   values, sufficient retained channel support, and acceptable filtration audit
-   status.
-2. Probe performance is the primary evidence under a fixed probe and fixed CV
-   protocol.
-3. Closely matched probe candidates are compared using bootstrap/rerun ranking
-   stability.
-4. If candidates remain effectively tied, lower computational cost is preferred.
-5. User constraints such as allowed methods, target metric, and stopping mode are
-   enforced before final evaluation.
+At a high level:
 
-If the user provides a target threshold, MathAgent can stop after the first
-full-scale candidate satisfying the target. If the user requests
-best-available mode, MathAgent evaluates the frozen promoted candidate pool and
-returns the best validation/test result allowed by that protocol.
+| Goal | Needs |
+|------|-------|
+| Run request parsing and planning | Code install only. |
+| Run natural-language intake | Code install plus an LLM API key. |
+| Run protein-ligand workflows | Dataset manifest, structure files, labels, execution profile, and external `embed_nn/plbind` tools. |
+| Run toxicity workflows | Molecule manifest, molecule files, labels, execution profile, and external toxicity feature tools. |
+| Reproduce paper-scale experiments | The above plus benchmark datasets and cluster compute. |
+
+## Code Structure
+
+```text
+MathAgent/
+├── README.md
+├── REPRODUCE.md
+├── pyproject.toml
+├── figures/                  Paper-style framework and workflow figures
+├── configs/                  Request, task, representation, GBT, and HPC configs
+├── scripts/
+│   ├── slurm/                Generic Slurm wrappers
+│   ├── sapelo2/              Sapelo2-oriented launchers
+│   └── diagnostics/          Offline comparison helpers
+├── src/mint_scout/           Core Python package
+│   ├── agent/                LLM intake, advisory, explanation, graph helpers
+│   ├── data/                 Dataset manifests, splits, geometry, preparation
+│   ├── execution/            Artifact registry, Slurm jobs, lifecycle engine
+│   ├── invariants/           Legacy mathematical feature tool adapters
+│   ├── models/               GBT and optional ANN utilities
+│   ├── scout/                Probe CV, ranking, target policy
+│   ├── toxicity/             Small-molecule toxicity workflow
+│   └── mof/                  Experimental MOF workflow utilities
+└── tests/                    Unit and workflow tests
+```
+
+### LangGraph / workflow mapping
+
+The package keeps the historical internal module name `mint_scout`. The public
+CLI is `mathagent`; the legacy CLI alias `mint-agent` is also retained.
+
+| Workflow concept | Representative code |
+|------------------|---------------------|
+| User request parsing | `src/mint_scout/user_intake.py`, `src/mint_scout/agent/llm_intake.py` |
+| LLM scientific advisory | `src/mint_scout/agent/llm_scientific.py`, `src/mint_scout/toxicity/advisory.py` |
+| Representation design | `src/mint_scout/design_representation.py`, `src/mint_scout/representation_design.py` |
+| Probe selection and audit | `src/mint_scout/select_casf_probe.py`, `src/mint_scout/probe_audit.py` |
+| Feature tools and QC | `src/mint_scout/invariants/`, `src/mint_scout/feature_qc.py`, `src/mint_scout/filtration_audit.py` |
+| Progressive evaluation | `src/mint_scout/evaluate_acceptance_gbt.py`, `src/mint_scout/evaluate_frozen_test_gbt.py` |
+| Slurm orchestration | `src/mint_scout/run_pipeline.py`, `src/mint_scout/execution/` |
 
 ## Tests
 
@@ -246,14 +300,14 @@ python -m compileall src
 pytest
 ```
 
-Some tests use synthetic fixtures only. End-to-end HPC tests require a configured
-execution profile, dataset manifests, and external feature tools.
+Some tests use synthetic fixtures only. Full HPC tests require configured data,
+external feature tools, and a Slurm execution profile.
 
-## Security and Reproducibility
+## Security and Data Policy
 
-- This repository excludes raw data, generated features, caches, logs, and run
-  artifacts.
-- `.env`, `*.env`, and credential files are ignored.
+- Raw datasets, generated features, caches, logs, and run artifacts are excluded.
+- `.env`, `*.env`, and local credential files are ignored.
 - Example paths are placeholders and must be edited for each machine.
-- Generated reports include hashes, frozen config paths, and provenance records
-  so runs can be audited without mutating earlier artifacts.
+- External legacy feature tools are referenced through user-configurable paths.
+- Generated reports preserve hashes, frozen config paths, and provenance records
+  for auditability.
