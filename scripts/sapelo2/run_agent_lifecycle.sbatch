@@ -15,6 +15,7 @@ DEFAULT_MINT_AGENT_ROOT=$(cd "${SCRIPT_DIR}/../.." && pwd)
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-${DEFAULT_MINT_AGENT_ROOT}}
 PYTHON_BIN=${PYTHON_BIN:-python}
 RUN_ROOT=${RUN_ROOT:-/path/to/workdir/mathagent/runs}
+LOG_ROOT=${LOG_ROOT:-$(dirname "${RUN_ROOT}")/logs}
 REGISTRY=${REGISTRY:-/path/to/workdir/mathagent/memory/artifacts.sqlite}
 TASK_CONFIG=${TASK_CONFIG:-configs/tasks/casf2016_sapelo2.yaml}
 EXECUTION_PROFILE=${EXECUTION_PROFILE:-configs/execution/sapelo2.yaml}
@@ -45,7 +46,7 @@ LLM_CACHE_DIR=${LLM_CACHE_DIR:-}
 LLM_MAX_CANDIDATES=${LLM_MAX_CANDIDATES:-10}
 LLM_TIMEOUT_SECONDS=${LLM_TIMEOUT_SECONDS:-180}
 
-mkdir -p /path/to/workdir/mathagent/logs "${RUN_ROOT}"
+mkdir -p "${LOG_ROOT}" "${RUN_ROOT}"
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
