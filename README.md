@@ -12,7 +12,11 @@ The current public release focuses on two task families:
 - protein-ligand binding affinity regression;
 - quantitative small-molecule toxicity regression.
 
+### Framework overview
 
+![MathAgent architecture showing user input, four workflow agents, shared memory, and mathematical tools](figures/main.png)
+
+[Download the framework figure as a PDF](figures/main.pdf).
 
 ## What MathAgent Does
 
@@ -82,6 +86,10 @@ Both modes keep the candidate order fixed before full-scale evaluation. For
 protected benchmark comparisons, the held-out test set is evaluated once after
 selection. For user-facing acceptance workflows, a user-provided acceptance set
 can be used to decide whether the requested target has been met.
+
+![Example execution traces for target-constrained LD50 prediction and best-available CASF-2016 prediction](figures/userguide_new.png)
+
+[Download the execution-mode figure as a PDF](figures/userguide_new.pdf).
 
 ## Installation
 
@@ -277,5 +285,4 @@ pytest
 
 Some tests use synthetic fixtures only. Full HPC runs require configured data,
 external feature tools, and a Slurm execution profile.
-
 
