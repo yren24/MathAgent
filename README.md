@@ -68,9 +68,6 @@ rewriting them inside the workflow.
 | `FPRC` | Forman persistent Ricci curvature | Multiscale discrete curvature summaries. |
 | `EIC` | Element-interactive curvature | Element-resolved geometric and curvature summaries. |
 
-The adapters record feature schema, sample order, representation hash, external
-tool path, and provenance metadata so cached artifacts are reused only when they
-match the active configuration.
 
 ## Execution Modes
 
@@ -88,7 +85,6 @@ can be used to decide whether the requested target has been met.
 
 ![Example execution traces for target-constrained LD50 prediction and best-available CASF-2016 prediction](figures/userguide_new.png)
 
-[Download the execution-mode figure as a PDF](figures/userguide_new.pdf).
 
 ## Installation
 
