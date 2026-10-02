@@ -148,13 +148,45 @@ def test_combine_scout_oof_ranks_all_available_subsets(tmp_path):
     )
 
 
-def test_combine_scout_oof_rejects_mismatched_gbt_hash(tmp_path):
+def test_combine_scout_oof_allows_explicit_gbt_config_hash(tmp_path):
+    config, representation, probe, reports = _fixture(tmp_path)
+    actual_hash = "explicit-gbt-config-hash"
+    for report in reports:
+        payload = json.loads(report.read_text(encoding="utf-8"))
+        payload["scout"]["gbt_parameter_hash"] = actual_hash
+        report.write_text(json.dumps(payload), encoding="utf-8")
+
+    output = tmp_path / "combined.json"
+    artifact = tmp_path / "execution.json"
+    args = [
+        "--scout-config",
+        str(config),
+        "--representation-spec",
+        str(representation),
+        "--probe-selection",
+        str(probe),
+        "--output",
+        str(output),
+        "--execution-artifact",
+        str(artifact),
+    ]
+    for report in reports:
+        args.extend(["--scout-report", str(report)])
+
+    assert main(args) == 0
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    execution = json.loads(artifact.read_text(encoding="utf-8"))
+    assert payload["gbt_parameter_hash"] == actual_hash
+    assert execution["gbt_parameter_hash"] == actual_hash
+
+
+def test_combine_scout_oof_rejects_inconsistent_source_gbt_hashes(tmp_path):
     config, representation, probe, reports = _fixture(tmp_path)
     payload = json.loads(reports[0].read_text(encoding="utf-8"))
     payload["scout"]["gbt_parameter_hash"] = "wrong"
     reports[0].write_text(json.dumps(payload), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="GBT parameter hash mismatch"):
+    with pytest.raises(ValueError, match="one shared GBT configuration"):
         main(
             [
                 "--scout-config",
@@ -165,6 +197,8 @@ def test_combine_scout_oof_rejects_mismatched_gbt_hash(tmp_path):
                 str(probe),
                 "--scout-report",
                 str(reports[0]),
+                "--scout-report",
+                str(reports[1]),
                 "--output",
                 str(tmp_path / "combined.json"),
                 "--execution-artifact",

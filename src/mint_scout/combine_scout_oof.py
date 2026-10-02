@@ -58,6 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     predictions: dict[str, np.ndarray] = {}
     sources: dict[str, str] = {}
     feature_manifests: dict[str, Path] = {}
+    gbt_hashes: set[str] = set()
     for report_path in args.scout_report:
         report = _load_object(report_path)
         if report.get("representation_hash") != representation.spec_hash:
@@ -65,8 +66,10 @@ def main(argv: list[str] | None = None) -> int:
         if report.get("selection_hash") != probe.get("selection_hash"):
             raise ValueError(f"Selection hash mismatch in {report_path}")
         scout = report["scout"]
-        if scout.get("gbt_parameter_hash") != config.gbt.parameter_hash:
-            raise ValueError(f"GBT parameter hash mismatch in {report_path}")
+        gbt_hash = str(scout.get("gbt_parameter_hash") or "")
+        if not gbt_hash:
+            raise ValueError(f"Missing GBT parameter hash in {report_path}")
+        gbt_hashes.add(gbt_hash)
         if tuple(scout.get("probe_sample_ids", ())) != sample_ids:
             raise ValueError(f"Probe sample order mismatch in {report_path}")
         report_predictions = scout.get("invariant_oof_predictions", {})
@@ -90,6 +93,12 @@ def main(argv: list[str] | None = None) -> int:
             feature_manifests[name] = Path(str(manifest))
     if not predictions:
         raise ValueError("No OOF predictions were loaded")
+    if len(gbt_hashes) != 1:
+        raise ValueError(
+            "Source Scout OOF reports must use one shared GBT configuration; "
+            f"found {sorted(gbt_hashes)}"
+        )
+    gbt_parameter_hash = next(iter(gbt_hashes))
     qc_report = None
     if args.feature_qc_report is not None:
         if set(feature_manifests) != set(predictions):
@@ -149,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
         {
             "sample_ids": sample_ids,
             "fold_assignment": probe_folds,
-            "gbt_parameter_hash": config.gbt.parameter_hash,
+            "gbt_parameter_hash": gbt_parameter_hash,
             "primary_metric": config.primary_metric,
             "prediction_hashes": prediction_hashes,
             "priority_order": ranking.priority_order,
@@ -181,7 +190,7 @@ def main(argv: list[str] | None = None) -> int:
         "sample_count": len(sample_ids),
         "sample_ids": list(sample_ids),
         "invariants": sorted(predictions),
-        "gbt_parameter_hash": config.gbt.parameter_hash,
+        "gbt_parameter_hash": gbt_parameter_hash,
         "ranking_policy": RANKING_POLICY,
         "combined_probe_hash": combined_probe_hash,
         "consensus_metrics": summaries,
@@ -234,7 +243,7 @@ def main(argv: list[str] | None = None) -> int:
         target_direction=target.direction,
         target_value=target.value,
         target_source=target.source,
-        gbt_parameter_hash=config.gbt.parameter_hash,
+        gbt_parameter_hash=gbt_parameter_hash,
         probe_hash=combined_probe_hash,
         ranking_policy=RANKING_POLICY,
     )
