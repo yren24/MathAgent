@@ -278,11 +278,4 @@ pytest
 Some tests use synthetic fixtures only. Full HPC runs require configured data,
 external feature tools, and a Slurm execution profile.
 
-## Security and Data Policy
 
-- Raw datasets, generated features, caches, logs, and run artifacts are excluded.
-- `.env`, `*.env`, and local credential files are ignored.
-- Example paths are placeholders and must be edited for each machine.
-- External mathematical feature tools are referenced through user-configurable paths.
-- Generated reports preserve hashes, frozen config paths, and provenance records
-  for auditability.
