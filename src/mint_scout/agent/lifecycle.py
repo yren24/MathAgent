@@ -455,10 +455,22 @@ def _schedule_continuation(
     ]
     if stop_after_stage is not None:
         export_values.append(f"STOP_AFTER_STAGE={stop_after_stage}")
+    scheduler_log_options: tuple[str, ...] = ()
+    try:
+        profile = load_execution_profile(state["config"]["execution_profile"])
+    except FileNotFoundError:
+        profile = None
+    if profile is not None:
+        log_root = Path(profile.log_root)
+        scheduler_log_options = (
+            f"--output={log_root}/mint-agent-lifecycle-%j.out",
+            f"--error={log_root}/mint-agent-lifecycle-%j.err",
+        )
     command = (
         "sbatch",
         f"--dependency=afterany:{':'.join(dependency_ids)}",
         f"--export={','.join(export_values)}",
+        *scheduler_log_options,
         str(continuation_script),
     )
     result = command_runner(command, _optional_string(project_root))
