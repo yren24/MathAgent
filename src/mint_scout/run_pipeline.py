@@ -125,6 +125,7 @@ def build_pipeline_launch_plan(path: str | Path) -> PipelineLaunchPlan:
 
     environment = {
         "MINT_AGENT_ROOT": profile.project_root,
+        "PYTHON_BIN": profile.python_executable,
         "RUN_ROOT": profile.run_root,
         "LOG_ROOT": profile.log_root,
         "REGISTRY": str(registry_path),
