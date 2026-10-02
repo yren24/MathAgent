@@ -193,7 +193,7 @@ python -m mint_scout.run_pipeline status \
   --config configs/pipelines/generic_protein_ligand.example.yaml
 ```
 
-## HPC Usage
+## linux Usage
 
 MathAgent is cluster agnostic. Start from the generic profile and adapt it to
 your own scheduler environment:
@@ -211,9 +211,7 @@ Edit at least:
 - module setup;
 - partition, memory, CPU, and wall-time limits.
 
-The `scripts/sapelo2/` directory is a site-specific example for UGA Sapelo2.
-It is useful as a template, but users on other clusters should copy the generic
-profile and keep machine-specific edits local.
+
 
 ## Reproduction Notes
 
