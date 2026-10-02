@@ -12,8 +12,7 @@ The current public release focuses on two task families:
 - protein-ligand binding affinity regression;
 - quantitative small-molecule toxicity regression.
 
-Raw datasets, generated feature matrices, Slurm logs, private paths, and API
-credentials are intentionally excluded from this repository.
+
 
 ## What MathAgent Does
 
