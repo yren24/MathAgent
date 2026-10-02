@@ -23,9 +23,6 @@ mint-agent = "mint_scout.cli:main"
 dev = [
   "pytest>=7.0",
 ]
-ann = [
-  "torch>=2.0",
-]
 agent = [
   "langgraph>=1.0,<2.0",
 ]

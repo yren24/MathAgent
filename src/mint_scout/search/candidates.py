@@ -79,7 +79,10 @@ def enabled_candidate_pipelines(config: dict[str, Any]) -> tuple[CandidatePipeli
 
 def assert_model_conditioned_candidates(candidates: Iterable[CandidatePipeline]) -> None:
     for candidate in candidates:
-        if candidate.model_family == "neural_network" and candidate.model == "legacy_gbt":
-            raise ValueError(f"{candidate.name} mixes neural_network family with legacy_gbt model")
+        if candidate.model_family != "gradient_boosting":
+            raise ValueError(
+                f"{candidate.name} uses unsupported model_family {candidate.model_family!r}; "
+                "the public MathAgent workflow currently supports gradient_boosting candidates"
+            )
         if candidate.input_contract not in {"fixed_vector", "graph", "sequence", "hybrid"}:
             raise ValueError(f"{candidate.name} has unsupported input_contract {candidate.input_contract!r}")

@@ -133,7 +133,9 @@ candidate pipeline =
   + training protocol
 ```
 
-This keeps feature selection model-conditioned. For example, evidence from `PL + legacy_gbt` does not imply that `PL + mlp_v1` or `PL + gnn_v1` will be optimal.
+This keeps feature selection model-conditioned. For example, evidence from one
+GBT training protocol must not be reused for a different model family or
+normalization contract without a separately declared candidate pipeline.
 
 ## First Active Model Family
 
@@ -151,13 +153,8 @@ max_features = sqrt
 n_runs = 3 (adaptive default; the frozen legacy reproduction profile remains 10)
 ```
 
-Neural networks should be added later as new candidate pipelines with explicit input contracts, not as replacements for GBT assumptions.
-
-The current `fixed_probe_ann` path is a bounded diagnostic toward that future model registry. It uses
-the existing PLBind ANN pattern (flattened feature blocks, fold-local `StandardScaler`, BatchNorm/ReLU,
-MSE, AdamW, and OneCycleLR) with one frozen configuration and shared probe folds. It separately reports
-feature concatenation and prediction-level averaging, and evaluates each combination against its best
-singleton component. Its output is not a Scout execution artifact and cannot change the V1 GBT search.
+Other model families can be added later as new candidate pipelines with
+explicit input contracts, not as replacements for the current GBT assumptions.
 
 ## Representation Boundary
 
@@ -372,6 +369,6 @@ The acceptance node emits a registered no-CV GBT job for each required acquisiti
 evidence is absent. Each later stage names the immediately preceding report and reuses its per-invariant
 predictions. Reconcilers require exact feature manifests, a certifying QC report, the frozen Scout
 artifact, representation hash, GBT hash, sample order, and selection objective. The general evaluation
-node continues to emit the routed full-CV job where that protocol applies. Additional runners such as
-`mlp_v1`, `gnn_v1`, small-molecule GBT, or future ensembles remain separate candidate pipelines and
-must declare their own input contracts rather than inheriting GBT feature rankings.
+node continues to emit the routed full-CV job where that protocol applies. Any future runner must remain
+a separate candidate pipeline and declare its own input contract rather than inheriting GBT feature
+rankings.
