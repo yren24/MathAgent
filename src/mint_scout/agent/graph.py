@@ -131,6 +131,17 @@ def _gbt_config_for_frozen_scout(state: Mapping[str, Any]) -> str:
     return requested
 
 
+def _expected_scout_gbt_parameter_hash(
+    state: Mapping[str, Any], scout_config: str | Path
+) -> str:
+    requested_gbt_config = state.get("request", {}).get("gbt_config")
+    if requested_gbt_config:
+        requested_hash = _gbt_config_hash(str(requested_gbt_config))
+        if requested_hash is not None:
+            return requested_hash
+    return ScoutConfig.from_mapping(load_yaml(scout_config)).gbt.parameter_hash
+
+
 def build_agent_graph(context: AgentGraphContext, *, checkpointer=None):
     try:
         from langgraph.graph import END, START, StateGraph
@@ -1162,9 +1173,9 @@ def build_agent_graph(context: AgentGraphContext, *, checkpointer=None):
         scout_config = str(
             state.get("request", {}).get("scout_config") or "configs/scout/v1.yaml"
         )
-        expected_gbt_parameter_hash = ScoutConfig.from_mapping(
-            load_yaml(scout_config)
-        ).gbt.parameter_hash
+        expected_gbt_parameter_hash = _expected_scout_gbt_parameter_hash(
+            state, scout_config
+        )
         scout = _latest(
             artifacts,
             kind="scout_execution_plan",

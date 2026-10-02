@@ -12,6 +12,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from mint_scout.agent.graph import (
     AgentGraphContext,
     _controlled_experiment_output_dir,
+    _expected_scout_gbt_parameter_hash,
     build_agent_graph,
 )
 from mint_scout.agent.llm_scientific import LLMScientificContext
@@ -28,6 +29,7 @@ from mint_scout.execution.jobs import (
 )
 from mint_scout.run_agent_graph import _exit_code, main as run_graph_main
 from mint_scout.scout.pipeline import ScoutConfig
+from mint_scout.models.gbt import GBTConfig
 
 _TEST_GBT_HASH = ScoutConfig.from_mapping(
     load_yaml("configs/scout/v1.yaml")
@@ -62,6 +64,44 @@ def test_controlled_experiment_output_dir_is_representation_scoped(
     assert first == legacy / "1a1b76bf85eb9999"
     assert repaired == legacy / "43fd1b5d62536957"
     assert first != repaired
+
+
+def test_scout_expected_gbt_hash_prefers_explicit_gbt_config(tmp_path: Path):
+    gbt_path = tmp_path / "gbt.yaml"
+    gbt_path.write_text(
+        "\n".join(
+            [
+                "config_id: tiny-smoke",
+                "n_estimators: 7",
+                "max_depth: 2",
+                "min_samples_split: 2",
+                "learning_rate: 0.03",
+                "subsample: 0.8",
+                "max_features: sqrt",
+                "random_state: 99",
+                "n_runs: 1",
+                "normalize: StandardScaler",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    expected = GBTConfig(
+        config_id="tiny-smoke",
+        n_estimators=7,
+        max_depth=2,
+        min_samples_split=2,
+        learning_rate=0.03,
+        subsample=0.8,
+        max_features="sqrt",
+        random_state=99,
+        n_runs=1,
+        normalize="StandardScaler",
+    ).parameter_hash
+
+    assert _expected_scout_gbt_parameter_hash(
+        {"request": {"gbt_config": str(gbt_path)}}, "configs/scout/v1.yaml"
+    ) == expected
 
 
 def _record(
