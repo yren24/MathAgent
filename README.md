@@ -16,7 +16,6 @@ The current public release focuses on two task families:
 
 ![MathAgent architecture showing user input, four workflow agents, shared memory, and mathematical tools](figures/main.png)
 
-[Download the framework figure as a PDF](figures/main.pdf).
 
 ## What MathAgent Does
 
