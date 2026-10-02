@@ -11,7 +11,7 @@
 set -euo pipefail
 
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 PIPELINE_CONFIG=${PIPELINE_CONFIG:?PIPELINE_CONFIG must be provided}
 PIPELINE_COMMAND=${PIPELINE_COMMAND:-submit}
 EXECUTE=${EXECUTE:-0}

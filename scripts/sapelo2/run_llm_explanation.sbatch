@@ -11,7 +11,7 @@
 set -euo pipefail
 
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 SUMMARY_REPORT=${SUMMARY_REPORT:?SUMMARY_REPORT must be provided}
 OPENAI_MODEL=${OPENAI_MODEL:?OPENAI_MODEL must be provided}
 OPENAI_API_KEY=${OPENAI_API_KEY:?OPENAI_API_KEY must be set in the environment}

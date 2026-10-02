@@ -11,7 +11,7 @@
 set -euo pipefail
 
 export MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-export PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+export PYTHON_BIN=${PYTHON_BIN:-python}
 
 REGISTRY=${REGISTRY:-/path/to/workdir/mathagent/memory/artifacts.sqlite}
 RUN_ROOT=${RUN_ROOT:-/path/to/workdir/mathagent/runs}

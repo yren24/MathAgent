@@ -13,7 +13,7 @@ set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 DEFAULT_MINT_AGENT_ROOT=$(cd "${SCRIPT_DIR}/../.." && pwd)
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-${DEFAULT_MINT_AGENT_ROOT}}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 RUN_ROOT=${RUN_ROOT:-/path/to/workdir/mathagent/runs}
 REGISTRY=${REGISTRY:-/path/to/workdir/mathagent/memory/artifacts.sqlite}
 TASK_CONFIG=${TASK_CONFIG:-configs/tasks/casf2016_sapelo2.yaml}

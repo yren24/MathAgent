@@ -11,7 +11,7 @@
 set -euo pipefail
 
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 METADATA=${METADATA:-/path/to/workdir/mathagent/external/hiqbind/source/hiqbind_sm_metadata.csv}
 OUTPUT=${OUTPUT:-/path/to/workdir/mathagent/runs/hiqbind_subset_preview.json}
 MAX_SAMPLES=${MAX_SAMPLES:-500}

@@ -11,7 +11,7 @@
 set -euo pipefail
 
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 : "${BASELINE_REPRESENTATION:?BASELINE_REPRESENTATION is required}"
 : "${CANDIDATE_REPRESENTATION:?CANDIDATE_REPRESENTATION is required}"
 : "${BASELINE_OOF:?BASELINE_OOF is required as a comma-separated list}"

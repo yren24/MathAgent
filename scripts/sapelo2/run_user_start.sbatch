@@ -11,7 +11,7 @@
 set -euo pipefail
 
 MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
-PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
+PYTHON_BIN=${PYTHON_BIN:-python}
 EXECUTE=${EXECUTE:-0}
 OPENAI_ENV_FILE=${OPENAI_ENV_FILE:-~/.config/mathagent/openai.env}
 MANIFEST_PROFILE_MAX_ROWS=${MANIFEST_PROFILE_MAX_ROWS:-200}
