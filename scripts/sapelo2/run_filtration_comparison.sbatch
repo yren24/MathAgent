@@ -24,7 +24,7 @@ PYTHON_BIN=${PYTHON_BIN:-${MINT_AGENT_ROOT}/.venv-langgraph/bin/python}
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 args=(
   --baseline-representation "${BASELINE_REPRESENTATION}"

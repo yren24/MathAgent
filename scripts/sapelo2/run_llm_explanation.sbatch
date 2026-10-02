@@ -22,7 +22,7 @@ mkdir -p /path/to/workdir/mathagent/logs
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 args=(
   --summary "${SUMMARY_REPORT}"

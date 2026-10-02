@@ -24,7 +24,7 @@ MAX_PER_PDB_ID=${MAX_PER_PDB_ID:-1}
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 "${PYTHON_BIN}" -m mint_scout.data.hiqbind preview-subset \
   --metadata "${METADATA}" \

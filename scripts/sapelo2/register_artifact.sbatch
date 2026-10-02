@@ -18,7 +18,7 @@ REGISTRY=${REGISTRY:-/path/to/workdir/mathagent/memory/artifacts.sqlite}
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 args=(register --registry "${REGISTRY}" --artifact "${ARTIFACT}")
 [[ -n "${ARTIFACT_KIND:-}" ]] && args+=(--kind "${ARTIFACT_KIND}")

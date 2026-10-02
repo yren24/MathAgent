@@ -12,7 +12,7 @@ set -euo pipefail
 
 export MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
 export PYTHON_BIN=${PYTHON_BIN:-python}
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 SCOUT_CONFIG=${SCOUT_CONFIG:-configs/scout/v1.yaml}
 REPRESENTATION_SPEC=${REPRESENTATION_SPEC:-/path/to/workdir/mathagent/runs/representation_train_offset-0_limit-all_47823391.json}

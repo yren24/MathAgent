@@ -40,7 +40,7 @@ if [[ -f "${OPENAI_ENV_FILE}" ]]; then
   set +a
 fi
 unset EBPYTHONPREFIXES
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 args=()
 if [[ -n "${USER_REQUEST:-}" ]]; then

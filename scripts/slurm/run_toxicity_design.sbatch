@@ -23,7 +23,7 @@ mkdir -p /path/to/workdir/mathagent/logs "${OUTPUT_ROOT}"
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH="${MINT_AGENT_ROOT}/src:${GUDHI_ROOT}"
+export PYTHONPATH="${MINT_AGENT_ROOT}/src:${GUDHI_ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
 export PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
 
 "${PYTHON_BIN}" -m pytest -q \

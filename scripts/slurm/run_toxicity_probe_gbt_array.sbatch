@@ -22,7 +22,7 @@ mkdir -p /path/to/workdir/mathagent/logs "${GBT_ROOT}/oof"
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH="${MINT_AGENT_ROOT}/src"
+export PYTHONPATH="${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 "${PYTHON_BIN}" -m mint_scout.toxicity.probe_gbt oof \
   --feature-plan "${REPAIR_ROOT}/toxicity_repair_feature_plan.json" \

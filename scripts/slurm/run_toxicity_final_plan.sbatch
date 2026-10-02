@@ -21,7 +21,7 @@ mkdir -p /path/to/workdir/mathagent/logs "${FINAL_ROOT}"
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH="${MINT_AGENT_ROOT}/src"
+export PYTHONPATH="${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 
 "${PYTHON_BIN}" -m mint_scout.toxicity.final_plan \
   --scout-report "${REPAIR_ROOT}/gbt/toxicity_probe_scout.json" \

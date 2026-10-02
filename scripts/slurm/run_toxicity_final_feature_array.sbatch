@@ -26,7 +26,7 @@ mkdir -p /path/to/workdir/mathagent/logs "${FEATURE_ROOT}"
 cd "${MINT_AGENT_ROOT}"
 source scripts/sapelo2/load_modules.sh
 unset EBPYTHONPREFIXES
-export PYTHONPATH="${MINT_AGENT_ROOT}/src:${GUDHI_ROOT}"
+export PYTHONPATH="${MINT_AGENT_ROOT}/src:${GUDHI_ROOT}${PYTHONPATH:+:${PYTHONPATH}}"
 
 IFS=: read -r -a molecule_dirs <<< "${MOLECULE_DIRS}"
 molecule_args=()

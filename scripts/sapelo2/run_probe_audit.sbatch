@@ -12,7 +12,7 @@ set -euo pipefail
 
 export MINT_AGENT_ROOT=${MINT_AGENT_ROOT:-/path/to/MathAgent}
 export PYTHON_BIN=${PYTHON_BIN:-python}
-export PYTHONPATH=${MINT_AGENT_ROOT}/src
+export PYTHONPATH=${MINT_AGENT_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}
 
 RUN_ROOT=${RUN_ROOT:-/path/to/workdir/mathagent/runs}
 PROBE_SELECTION=${PROBE_SELECTION:-/path/to/workdir/mathagent/runs/probe_selection_47979548.json}
