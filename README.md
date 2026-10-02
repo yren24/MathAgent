@@ -50,9 +50,7 @@ MathAgent follows the terminology used in the manuscript:
 | **ScreenAgent** | Choose a representative training subsample, compute low-cost evidence, and rank invariant combinations. | Candidate ranking, stability evidence, promoted candidates. |
 | **TestAgent** | Reuse cached full-scale features, evaluate frozen candidates, and stop according to the selected policy. | Final metrics, selected combination, stop reason, report. |
 
-The implementation is agentic in the workflow sense: specialized stages share a
-structured state, exchange validated artifacts, and can resume after jobs finish
-on an HPC system. The public code uses LangGraph-compatible organization, while
+The public code uses LangGraph-compatible organization, while
 the scientific decisions remain reproducible Python logic.
 
 ## Mathematical Tool Layer
